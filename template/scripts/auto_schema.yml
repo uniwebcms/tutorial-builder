@@ -1,0 +1,30 @@
+elementColumns:
+  $: Role
+  type: Element
+  layout: Layout
+  description: Description
+
+propertyColumns:
+  $: Name
+  type: Type
+  default: Default
+  description: Description
+
+elements:
+  background:
+    type: image
+    layout: center, wide
+    description: The background image.
+  tagline:
+    type: H2
+    description: A phrase that precedes the main headline.
+  title:
+    type: H1
+    layout: left, center, right
+    description: The main headline.
+  text:
+    type: paragraph
+    description: The body text.
+  media:
+    type: image, video
+    description: The primary visual content.
