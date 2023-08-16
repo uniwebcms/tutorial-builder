@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const readSchemas = require('./utils');
 
@@ -57,10 +58,10 @@ function getFooter(rootDir) {
     };
 }
 
-function parseEnvProps(props) {
+function parseEnvProps(envProps) {
     let url, baseUrl;
 
-    const { npm_lifecycle_event, TUTORIAL_SITE_URL, TUTORIAL_SITE_BASE_URL, GITHUB_REPOSITORY_OWNER, GITHUB_REPOSITORY } = props;
+    const { npm_lifecycle_event, TUTORIAL_SITE_URL, TUTORIAL_SITE_BASE_URL, GITHUB_REPOSITORY_OWNER, GITHUB_REPOSITORY } = envProps;
 
     switch (npm_lifecycle_event) {
         case 'start':
@@ -108,8 +109,19 @@ function parseEnvProps(props) {
     return { url, baseUrl };
 }
 
-function getConfig(rootDir, props, themeConfig, plugins) {
-    const { url, baseUrl } = parseEnvProps(props);
+function getConfig(rootDir, envProps, themeConfig) {
+    const { url, baseUrl } = parseEnvProps(envProps);
+
+    // import functions/plugins from the project-level scripts directory
+    const makeFile = require(path.resolve(rootDir, 'scripts/fileMaker.js'));
+    const prebuildPlugin = require(path.resolve(rootDir, 'scripts/prebuildPlugin.js'));
+
+    // prebuild schemas.json if not exists
+    const schemasFilePath = path.resolve(rootDir, 'static/schemas.json');
+    if (!fs.existsSync(schemasFilePath)) {
+        console.log('Initializing schemas.json...');
+        makeFile(rootDir);
+    }
 
     return {
         title: 'Website Components',
@@ -119,7 +131,7 @@ function getConfig(rootDir, props, themeConfig, plugins) {
         onBrokenLinks: 'warn',
         onBrokenMarkdownLinks: 'warn',
         favicon: 'img/favicon.png',
-        plugins: [[...plugins, { rootDir }]],
+        plugins: [[prebuildPlugin, { rootDir }]],
         presets: [
             [
                 '@docusaurus/preset-classic',
