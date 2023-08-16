@@ -44,7 +44,7 @@ async function PrebuildPlugin(context, opts) {
 
             if (!buildCounter || getLastModTime(src) >= getLastModTime(docs)) {
                 buildCounter++;
-                console.log(`Pre building markdown files (#${buildCounter})...`);
+                console.log(`Rebuilding markdown content (#${buildCounter})...`);
                 makeFile(context.siteDir);
             }
         },
@@ -52,9 +52,10 @@ async function PrebuildPlugin(context, opts) {
         getPathsToWatch() {
             // https://docusaurus.io/docs/api/plugin-methods/extend-infrastructure
             // Paths to watch.
-            console.log('watching source files');
+            console.log('File changes detected.');
             // console.log(path.resolve(context.siteDir, '../src'));
             const srcDir = path.resolve(context.siteDir, '../src');
+
             return [`${srcDir}/*/docs/**/*.{yml,png,jpg}`];
         }
     };

@@ -26,7 +26,18 @@ function getNavbar(rootDir) {
     };
 }
 
-function getFooter() {
+const getFooterMenus = (rootDir) => {
+    const schemas = readSchemas(rootDir);
+    let menus = [];
+
+    for (const key in schemas) {
+        menus.push({ label: key, to: `docs/${key}/intro` });
+    }
+
+    return menus;
+};
+
+function getFooter(rootDir) {
     return {
         style: 'dark',
         logo: {
@@ -40,10 +51,7 @@ function getFooter() {
                 label: 'Docs',
                 to: '/'
             },
-            {
-                label: 'Components',
-                to: '/docs/sample-doc'
-            }
+            ...getFooterMenus(rootDir)
         ],
         copyright: `Copyright © ${new Date().getFullYear()} Tutorial website by <a href="https://proximify.com">Proximify</a>.`
     };
