@@ -5,7 +5,6 @@ const sizeOf = require('image-size');
 const path = require('path');
 const fs = require('fs');
 const yaml = require('js-yaml');
-const { element } = require('prop-types');
 
 const autoSchema = loadYaml(__dirname + '/auto_schema.yml');
 const componentTemplate = fs.readFileSync(__dirname + '/component_template.mdx', 'utf8');
