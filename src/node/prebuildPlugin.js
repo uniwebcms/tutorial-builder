@@ -53,7 +53,7 @@ async function PrebuildPlugin(context, opts) {
             // https://docusaurus.io/docs/api/plugin-methods/extend-infrastructure
             // Paths to watch.
             console.log('File changes detected.');
-            // console.log(path.resolve(context.siteDir, '../src'));
+
             const srcDir = path.resolve(context.siteDir, '../src');
 
             return [`${srcDir}/*/docs/**/*.{yml,png,jpg}`];

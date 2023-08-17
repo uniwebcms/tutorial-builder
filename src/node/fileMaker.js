@@ -237,7 +237,8 @@ function renderComponentDoc(component, docsDir, sourceDir) {
     fs.writeFileSync(filePath, insertIntoMarkdown(template, map), 'utf-8');
 }
 
-const makeFile = (rootDir) => {
+const makeFile = () => {
+    const rootDir = process.cwd();
     const sourceDir = path.resolve(rootDir, '../src');
     const modules = loadSchemas(sourceDir);
     const docsDir = path.resolve(rootDir, 'docs');

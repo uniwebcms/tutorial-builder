@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = (_, argv) => {
     return {
-        entry: path.resolve(__dirname, 'src', 'index.js'),
+        entry: path.resolve(__dirname, 'src', 'browser', 'index.js'),
         resolve: {
             extensions: ['.jsx', '.js', '.json']
         },

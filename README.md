@@ -6,45 +6,33 @@ Generator of markdown files for a Docusaurus tutorial website,
 
 ```lua
 tutorial-builder
-    ├──src.
-    │   └──node
-    │       └── ...   // Node.js specific utilities
-    └──browser
-        └── ...   // Browser-specific components
-
+  └── src
+      ├── browser
+      │   └── ... // Browser-specific components
+      └── node
+          └── ... // Node.js specific utilities
 ```
 
 ## Main Entry Point
 
-In package.json, we set the main field to point to the main Node.js entry file. This is the primary entry point for tools like Node.js scripts.
+In package.json, we set the main field to point to the bundle.js under `dist`. This is the primary entry point to get components.
 
 ```json
 {
-  "main": "./src/node/index.js"
+  "main": "dist/bundle.js",
 }
-```
-
-## Module Field
-
-When bundling the browser components with a tool that understands ES modules (like Webpack, Rollup, etc.), we can make use of the module field in package.json. This can point to an ES module entry point.
-
-```json
-{
-  "module": "./src/browser/index.js"
-}
-
 ```
 
 ## Conditional Exports
 
-Node.js introduced a feature called conditional exports that allows defining different entry points based on the environment. This can be helpful if your library has distinct Node and browser entry points
+Node.js introduced a feature called conditional exports that allows defining different entry points based on the environment. This can be helpful if your library has distinct Node and browser entry points.
 
 ```json
 {
   "exports": {
-    "require": "./src/node/index.js",
-    "import": "./src/browser/index.js"
-  }
+    ".": "./dist/bundle.js",
+    "./utils": "./dist/node/index.js"
+  },
 }
 ```
 
