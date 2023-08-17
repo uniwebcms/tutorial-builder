@@ -11,10 +11,11 @@
         "dist",
         "template"
     ],
-    "main": "dist/bundle.js",
+    "main": "./src/node/index.js",
+    "module": "./src/browser/index.js",
     "exports": {
-        ".": "./dist/bundle.js",
-        "./scripts/*": "./dist/scripts/*.js"
+        "require": "./src/node/index.js",
+        "import": "./src/browser/index.js"
     },
     "scripts": {
         "mvScripts": "cp -r scripts dist/",
@@ -38,10 +39,12 @@
         "js-yaml": "^4.1.0",
         "fs-extra": "^11.1.1",
         "chalk": "4.1.2",
-        "react": "^17.0.2",
-        "react-dom": "^17.0.2",
         "photoswipe": "^5.3.8",
         "react-photoswipe-gallery": "2.2.7"
+    },
+    "peerDependencies": {
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2"
     },
     "devDependencies": {
         "@babel/core": "^7.13.14",

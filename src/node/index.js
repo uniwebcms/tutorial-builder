@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const makeFile = require('@uniwebcms/tutorial-builder/scripts/fileMaker');
-const prebuildPlugin = require('@uniwebcms/tutorial-builder/scripts/prebuildPlugin');
+const makeFile = require('./fileMaker');
+const prebuildPlugin = require('./prebuildPlugin');
 
 function readSchemas(rootDir) {
     const filePath = path.resolve(rootDir, 'static/schemas.json');
