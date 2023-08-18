@@ -1,12 +1,12 @@
 import React from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
-export const Gallery = (props) => {
+export const Gallery = ({ images }) => {
     return (
         <BrowserOnly fallback={<div>Loading...</div>}>
             {() => {
                 const Gallery = require('@uniwebcms/tutorial-builder').Gallery;
-                return <Gallery {...props} />;
+                return <Gallery images={images} />;
             }}
         </BrowserOnly>
     );
