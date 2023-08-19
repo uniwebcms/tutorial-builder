@@ -115,7 +115,7 @@ function initDir(dir) {
     }
 }
 
-function deleteDirectoryContents(dirPath) {
+function deleteDirectoryContents(dirPath, skipFile = false) {
     // Get all files and directories within the directory
     const items = fs.readdirSync(dirPath);
 
@@ -130,7 +130,7 @@ function deleteDirectoryContents(dirPath) {
 
             // Then delete the directory itself
             fs.rmdirSync(itemPath);
-        } else {
+        } else if (!skipFile) {
             // If it's a file, delete it
             fs.unlinkSync(itemPath);
         }
@@ -179,7 +179,7 @@ function autoCompleteElements(elements) {
     return elements;
 }
 
-function renderComponentDoc(component, docsDir, sourceDir) {
+function renderComponentDoc(component, docsDir) {
     let gallery = '';
     const imgImport = [];
 
@@ -200,10 +200,7 @@ function renderComponentDoc(component, docsDir, sourceDir) {
         for (const img of component.images) {
             const imgName = 'img' + imgIdx++;
 
-            // Image path is relative because it's used in the public schemas.json too
-            // So we make it absolute and then relative to the component
-            const imgPath = path.relative(compDir, path.resolve(sourceDir, img.path));
-            imgImport.push(`import ${imgName} from '${imgPath}';`);
+            imgImport.push(`import ${imgName} from '@site/static/${img.path}';`);
 
             items.push(`[${imgName}, ${img.width}, ${img.height}]`);
         }
@@ -243,22 +240,45 @@ const makeFile = () => {
     const modules = loadSchemas(sourceDir);
     const docsDir = path.resolve(rootDir, 'docs');
     const staticDir = path.resolve(rootDir, 'static');
+    const schemasDir = path.resolve(staticDir, 'schemas');
 
     deleteDirectoryContents(docsDir);
+    deleteDirectoryContents(schemasDir);
+    deleteDirectoryContents(path.resolve(staticDir, 'img'), true);
 
     for (const moduleName in modules) {
         const components = modules[moduleName];
 
+        // create Components directory and _category_.yml for each module
         const compDir = path.resolve(docsDir, moduleName, 'Components');
         initDir(compDir);
         fs.writeFileSync(compDir + '/_category_.yml', 'collapsed: false', 'utf-8');
 
         for (const componentName in components) {
-            renderComponentDoc(components[componentName], docsDir, sourceDir);
-        }
-    }
+            // copy images for each component in each module and update the path
+            const component = components[componentName];
+            const images = component.images;
 
-    fs.writeFileSync(staticDir + '/schemas.json', JSON.stringify(modules), 'utf-8');
+            for (const image of images) {
+                const imageSrcPath = path.resolve(sourceDir, image.path);
+
+                const imageDir = path.resolve(staticDir, 'img', moduleName, componentName);
+                initDir(imageDir);
+
+                fs.copyFileSync(imageSrcPath, path.join(imageDir, image.key));
+
+                component.images[0].path = path.join('img', moduleName, componentName, image.key);
+            }
+
+            // create mdx doc for each component in each module
+            renderComponentDoc(component, docsDir);
+        }
+
+        // create schema.json for each module
+        const schemaDir = path.resolve(schemasDir, moduleName);
+        initDir(schemaDir);
+        fs.writeFileSync(path.join(schemaDir, 'schema.json'), JSON.stringify(components), { encoding: 'utf8', flag: 'w', recursive: true });
+    }
 };
 
 module.exports = makeFile;
