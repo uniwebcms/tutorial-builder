@@ -8,14 +8,14 @@ Generator of markdown files for a Docusaurus tutorial website,
 tutorial-builder
   └── src
       ├── browser
-      │   └── ... // Browser-specific components
+      │   └── ... -- Browser-specific components
       └── node
-          └── ... // Node.js specific utilities
+          └── ... -- Node.js specific utilities
 ```
 
 ## Main Entry Point
 
-In package.json, we set the main field to point to the bundle.js under `dist`. This is the primary entry point to get components.
+In package.json, we set the main field to point to `bundle.js` under `dist`. This is the primary entry point to get components.
 
 ```json
 {
@@ -31,10 +31,33 @@ Node.js introduced a feature called conditional exports that allows defining dif
 {
   "exports": {
     ".": "./dist/bundle.js",
-    "./utils": "./dist/node/index.js"
+    "./config": "./dist/node/index.js"
   },
 }
 ```
+
+With this format, the node script to generate the config object can be imported as:
+
+```javascript
+const getConfig = require('@uniwebcms/tutorial-builder/config');
+```
+
+## Build and public
+
+The built is saved to the `/dist` folder, which is not committed. The project must be built before it is published to npm.
+
+First, install the dependencies
+
+```bash
+npm i
+```
+
+```bash
+npm run build
+npm publish 
+```
+
+> The first time the package is published, call `npm login` to log in and `npm publish -access public` to make the package is public accessible.
 
 ## Webpack
 

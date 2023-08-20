@@ -3,23 +3,7 @@ const path = require('path');
 const chalk = require('chalk');
 const makeFile = require('./fileMaker');
 const prebuildPlugin = require('./prebuildPlugin');
-
-function readSchemas() {
-    const output = {};
-
-    const rootDir = path.resolve(process.cwd(), 'static', 'schemas');
-
-    const modules = fs.readdirSync(rootDir);
-
-    for (const module of modules) {
-        const schema = path.resolve(rootDir, module, 'schema.json');
-        const content = fs.readFileSync(schema, 'utf8');
-
-        output[module] = JSON.parse(content);
-    }
-
-    return output;
-}
+const readSchemas = require('./schemaParser.js');
 
 function getNavbarMenus() {
     const schemas = readSchemas();
@@ -165,4 +149,6 @@ function getConfig(envProps, themeConfig) {
     };
 }
 
-module.exports = { readSchemas, getConfig };
+// In script (NodeJs) mode, a tutorial site project only 
+// needs the function to generate a configuration object.
+module.exports = getConfig;

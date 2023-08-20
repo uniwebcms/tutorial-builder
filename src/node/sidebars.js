@@ -1,4 +1,4 @@
-const { readSchemas } = require('./index.js');
+const readSchemas = require('./schemaParser.js');
 
 function getSidebars() {
     const schemas = readSchemas();

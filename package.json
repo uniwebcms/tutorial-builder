@@ -1,7 +1,7 @@
 {
     "name": "@uniwebcms/tutorial-builder",
-    "version": "1.1.11",
-    "description": "An npm library that generate markdown files for tutorial website using Docusaurus.",
+    "version": "1.2.0",
+    "description": "A library to generate a tutorial website using Docusaurus.",
     "bin": {
         "@uniwebcms/tutorial-builder": "bin/script.js"
     },
@@ -14,7 +14,7 @@
     "main": "dist/bundle.js",
     "exports": {
         ".": "./dist/bundle.js",
-        "./utils": "./dist/node/index.js"
+        "./config": "./dist/node/index.js"
     },
     "scripts": {
         "mvNodeScripts": "cp -r src/node dist/",
