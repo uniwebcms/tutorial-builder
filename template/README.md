@@ -9,23 +9,16 @@ Auto generated tutorial website for Uniweb modules.
 
 ## Getting Started
 
-In the standard use case, one creates a Uniweb modules project from a GitHub repo template.
-The template would include a copy of a basic tutorial website.
+In the standard use case, one creates a Uniweb modules project from a GitHub repo template. The template should include a copy of this tutorial website. Alternatively, you can [create a tutorial website manually](#manual-installation).
 
-It is also possible to create a new tutorial website from scratch using the following command:
-
-```bash
-npx @uniwebcms/tutorial-builder@latest init [project-name]
-```
-
-This will initialize a new tutorial website project in the `project-name` directory under your project root. The <b>\`project-name\`</b> argument is optional. If you don't provide a project name, the default name "tutorial" will be used.
+The files under the tutorial website project don't need to be modified manually. The **build script** generates and updates all that is needed.
 
 ## Project Structure
 
-Once initialized, the project structure will look like this:
+The website project structure looks like this:
 
 ```lua
-tutorial/
+tutorial
     ├── README.md
     ├── babel.config.js
     ├── docs -- Auto generated contents. Don't add files here.
@@ -57,7 +50,7 @@ The markdown files for the tutorial website are build from YAML files and screen
 Each module under `uniweb-modules-repo/src` is expected to document only the components that it exports. Internal components can be documented using repo-level markdown files rather than pages of the tutorial website. Moreover, the explanations of exported components are meant to be read by non-technical individuals rather than developers.
 
 ```lua
-uniweb-modules-repo/
+uniweb-modules-repo
     ├── ...
     ├── src
 │   │   ├── ModuleName1 -- Source code and tutorial docs of module
@@ -127,6 +120,42 @@ yarn build:gh
 ```
 
 This script should be used in a workflow executed by GitHub Actions to provide the necessary environment variables. The built website will be available in the `dist` directory under the project's root. Once the build artifact is uploaded to GitHub Pages, the website can be visited via the GitHub Pages URL.
+
+## Manual installation
+
+It is possible to create a new tutorial website from scratch using the  command:
+
+```bash
+npx @uniwebcms/tutorial-builder@latest init [project-name]
+```
+
+The command initializes a new tutorial website project in the `project-name` directory under your project root. The <b>\`project-name\`</b> argument is optional. If you don't provide a project name, the default name `tutorial` will be used.
+
+Alternatively, you can install all from scratch with
+
+```bash
+cd tutorial && yarn add @docusaurus/core@latest @docusaurus/mdx-loader@latest @docusaurus/preset-classic@latest @uniwebcms/tutorial-builder
+```
+
+And then change the default code in `docusaurus.config.js` to the following code:
+
+```javascript
+const dotenv = require('dotenv');
+const lightCodeTheme = require('prism-react-renderer/themes/github');
+const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const getConfig = require('@uniwebcms/tutorial-builder/config');
+
+dotenv.config({ path: '../.env' });
+
+const themeConfig = {
+    prism: {
+        theme: lightCodeTheme,
+        darkTheme: darkCodeTheme
+    }
+};
+
+module.exports = getConfig(process.env, themeConfig);
+```
 
 ## Custom components
 
