@@ -215,7 +215,7 @@ function renderComponentDoc(component, docsDir) {
         gallery = `<BrowserOnly fallback={<div>Loading...</div>}>
             {() => {
                 const Gallery = require('@uniwebcms/tutorial-builder').Gallery;
-                return <Gallery images={images} />;
+                return <Gallery images={[${items}]} />;
             }}
         </BrowserOnly>`;
     }
