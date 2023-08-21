@@ -211,7 +211,13 @@ function renderComponentDoc(component, docsDir) {
 
         items = items.join(', ');
 
-        gallery = `<Gallery images={[${items}]}/>`;
+        // gallery = `<Gallery images={[${items}]}/>`;
+        gallery = `<BrowserOnly fallback={<div>Loading...</div>}>
+            {() => {
+                const Gallery = require('@uniwebcms/tutorial-builder').Gallery;
+                return <Gallery images={images} />;
+            }}
+        </BrowserOnly>`;
     }
 
     let description = component.description;
