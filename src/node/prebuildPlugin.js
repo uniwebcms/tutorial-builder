@@ -1,4 +1,4 @@
-const makeFile = require('./fileMaker.js');
+const generateProjectFiles = require('./fileMaker.js');
 const path = require('path');
 const { globSync } = require('glob');
 const fs = require('fs');
@@ -45,7 +45,7 @@ async function PrebuildPlugin(context, opts) {
             if (!buildCounter || getLastModTime(src) >= getLastModTime(docs)) {
                 buildCounter++;
                 console.log(`Rebuilding markdown content (#${buildCounter})...`);
-                makeFile(context.siteDir);
+                generateProjectFiles(context.siteDir);
             }
         },
 

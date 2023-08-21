@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
-const makeFile = require('./fileMaker');
+const generateProjectFiles = require('./fileMaker');
 const prebuildPlugin = require('./prebuildPlugin');
 const readSchemas = require('./schemaParser.js');
 
@@ -114,12 +114,17 @@ function parseEnvProps(envProps) {
 function getConfig(envProps, themeConfig) {
     const { url, baseUrl } = parseEnvProps(envProps);
     const rootDir = process.cwd();
+    const configFile = 'docusaurus.config.js';
 
-    // prebuild schemas.json if not exists
-    const schemasFilePath = path.resolve(rootDir, 'static/schemas.json');
-    if (!fs.existsSync(schemasFilePath)) {
-        console.log('Initializing schemas.json...');
-        makeFile();
+    // Make sure that the root directory is correct
+    if (!fs.existsSync(path.resolve(rootDir, configFile))) {
+        throw new Error(`Root directory doesn't contain '${configFile}' file`);
+    }
+
+    // Prebuild project files if they don't yet exist
+    if (!fs.existsSync(path.resolve(rootDir, 'static/modules'))) {
+        console.log('Initializing modules...');
+        generateProjectFiles();
     }
 
     return {

@@ -1,3 +1,7 @@
+# Tutorial Builder output directories
+docs/
+static/modules/
+
 # Logs
 logs
 *.log

@@ -4,7 +4,7 @@ const path = require('path');
 function readSchemas() {
     const output = {};
 
-    const rootDir = path.resolve(process.cwd(), 'static', 'schemas');
+    const rootDir = path.resolve(process.cwd(), 'static', 'modules');
 
     const modules = fs.readdirSync(rootDir);
 

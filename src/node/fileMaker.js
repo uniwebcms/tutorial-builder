@@ -115,7 +115,7 @@ function initDir(dir) {
     }
 }
 
-function deleteDirectoryContents(dirPath, skipFile = false) {
+function deleteDirectoryContents(dirPath) {
     // Get all files and directories within the directory
     const items = fs.readdirSync(dirPath);
 
@@ -130,7 +130,7 @@ function deleteDirectoryContents(dirPath, skipFile = false) {
 
             // Then delete the directory itself
             fs.rmdirSync(itemPath);
-        } else if (!skipFile) {
+        } else {
             // If it's a file, delete it
             fs.unlinkSync(itemPath);
         }
@@ -200,7 +200,7 @@ function renderComponentDoc(component, docsDir) {
         for (const img of component.images) {
             const imgName = 'img' + imgIdx++;
 
-            imgImport.push(`import ${imgName} from '@site/static/${img.path}';`);
+            imgImport.push(`import ${imgName} from '@site/static/modules/${img.path}';`);
 
             items.push(`[${imgName}, ${img.width}, ${img.height}]`);
         }
@@ -234,51 +234,49 @@ function renderComponentDoc(component, docsDir) {
     fs.writeFileSync(filePath, insertIntoMarkdown(template, map), 'utf-8');
 }
 
-const makeFile = () => {
-    const rootDir = process.cwd();
+const generateProjectFiles = (rootDir = process.cwd()) => {
     const sourceDir = path.resolve(rootDir, '../src');
-    const modules = loadSchemas(sourceDir);
     const docsDir = path.resolve(rootDir, 'docs');
-    const staticDir = path.resolve(rootDir, 'static');
-    const schemasDir = path.resolve(staticDir, 'schemas');
+    const publicDir = path.resolve(rootDir, 'static', 'modules');
+    const modules = loadSchemas(sourceDir);
 
     deleteDirectoryContents(docsDir);
-    deleteDirectoryContents(schemasDir);
-    deleteDirectoryContents(path.resolve(staticDir, 'img'), true);
+    deleteDirectoryContents(publicDir);
 
     for (const moduleName in modules) {
         const components = modules[moduleName];
 
-        // create Components directory and _category_.yml for each module
+        // Create the Components directory and _category_.yml for each module
         const compDir = path.resolve(docsDir, moduleName, 'Components');
         initDir(compDir);
         fs.writeFileSync(compDir + '/_category_.yml', 'collapsed: false', 'utf-8');
 
+        // Create schema.json for each module
+        const pubModDir = path.resolve(publicDir, moduleName);
+        initDir(pubModDir);
+        fs.writeFileSync(path.join(pubModDir, 'schema.json'), JSON.stringify(components), 'utf-8'); 
+        //{ encoding: 'utf8', flag: 'w', recursive: true }
+
+        // Generate the output markdown and static images
         for (const componentName in components) {
-            // copy images for each component in each module and update the path
             const component = components[componentName];
             const images = component.images;
 
+            // Copy images for each component in each module 
             for (const image of images) {
                 const imageSrcPath = path.resolve(sourceDir, image.path);
+                const imageTgtPath = path.join(publicDir, image.path);
 
-                const imageDir = path.resolve(staticDir, 'img', moduleName, componentName);
-                initDir(imageDir);
+                // Ensure that the path exists (including sub directories)
+                initDir(path.dirname(imageTgtPath));
 
-                fs.copyFileSync(imageSrcPath, path.join(imageDir, image.key));
-
-                component.images[0].path = path.join('img', moduleName, componentName, image.key);
+                fs.copyFileSync(imageSrcPath, imageTgtPath);
             }
 
-            // create mdx doc for each component in each module
+            // Create mdx doc for each component in each module
             renderComponentDoc(component, docsDir);
         }
-
-        // create schema.json for each module
-        const schemaDir = path.resolve(schemasDir, moduleName);
-        initDir(schemaDir);
-        fs.writeFileSync(path.join(schemaDir, 'schema.json'), JSON.stringify(components), { encoding: 'utf8', flag: 'w', recursive: true });
     }
 };
 
-module.exports = makeFile;
+module.exports = generateProjectFiles;
