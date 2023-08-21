@@ -20,6 +20,17 @@ const init = (projectName) => {
         // Copy the template directory to the destination directory
         fs.copySync(templateDir, projectDir);
 
+        // Create .gitignore file in the destination directory
+        const gitignore = path.join(projectDir, '.gitignore');
+        const gitignoreContent = `# Tutorial Builder output directories
+/docs/
+/static/modules/
+`;
+
+        if (!fs.existsSync(gitignore)) {
+            fs.writeFileSync(gitignore, gitignoreContent);
+        }
+
         const message = 'Project initialized successfully. (version: ' + chalk.green(version) + ')';
         console.log(message);
     } catch (error) {

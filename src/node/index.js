@@ -75,7 +75,7 @@ function parseEnvProps(envProps) {
         case 'build:prod':
             if (TUTORIAL_SITE_URL && TUTORIAL_SITE_BASE_URL) {
                 url = TUTORIAL_SITE_URL;
-                baseUrl = `${TUTORIAL_SITE_BASE_URL}_docs/`;
+                baseUrl = `${TUTORIAL_SITE_BASE_URL}_site/`;
                 break;
             } else {
                 let message =
@@ -96,7 +96,7 @@ function parseEnvProps(envProps) {
                 url = `https://${GITHUB_REPOSITORY_OWNER}.github.io`;
 
                 const repo = GITHUB_REPOSITORY.replace(GITHUB_REPOSITORY_OWNER, '').replace(/^\/|\/$/g, '');
-                baseUrl = `/${repo}/_docs/`;
+                baseUrl = `/${repo}/_site/`;
                 break;
             } else {
                 let message = chalk.yellow.bold('Warning! ') + chalk.white('Critical environment variables are missing. This could potentially occur when building in production mode outside of the GitHub Actions Workflow environment.');
@@ -154,6 +154,6 @@ function getConfig(envProps, themeConfig) {
     };
 }
 
-// In script (NodeJs) mode, a tutorial site project only 
+// In script (NodeJs) mode, a tutorial site project only
 // needs the function to generate a configuration object.
 module.exports = getConfig;
