@@ -116,6 +116,10 @@ function initDir(dir) {
 }
 
 function deleteDirectoryContents(dirPath) {
+    // Make sure that the directory exists since the goal
+    // is to leave it empty but existing
+    initDir(dirPath);
+
     // Get all files and directories within the directory
     const items = fs.readdirSync(dirPath);
 
