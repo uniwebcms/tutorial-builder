@@ -161,16 +161,17 @@ function formatKeywords(input) {
         : input; // Join them back with a comma and a space
 }
 
-function autoCompleteElements(elements) {
+function autoCompleteElements(elements, template) {
     if (Array.isArray(elements)) {
-        elements = Object.fromEntries(elements.map((key) => [key]));
+        elements = Object.fromEntries(elements.map((key) => [key, null]));
     }
 
-    const autoElements = autoSchema.elements || {};
+    const autoElements = template.elements || {};
 
     for (const key in elements) {
+        elements[key] ??= {};
+
         if (autoElements[key]) {
-            elements[key] ??= {};
             const elem = elements[key];
             const auto = autoElements[key];
 
@@ -179,8 +180,14 @@ function autoCompleteElements(elements) {
             }
         }
     }
+}
 
-    return elements;
+function autoCompleteComponents(components) {
+    for (const componentName in components) {
+        const component = components[componentName];
+
+        autoCompleteElements(component.elements, autoSchema);
+    }
 }
 
 function renderComponentDoc(component, docsDir) {
@@ -235,7 +242,7 @@ function renderComponentDoc(component, docsDir) {
         description,
         gallery,
         imgImport: imgImport.join(';\n'),
-        elementTable: generateMarkdownTable(autoCompleteElements(component.elements), autoSchema.elementColumns),
+        elementTable: generateMarkdownTable(component.elements, autoSchema.elementColumns),
         propertyTable
     };
 
@@ -254,25 +261,27 @@ const generateProjectFiles = (rootDir = process.cwd()) => {
     deleteDirectoryContents(publicDir);
 
     for (const moduleName in modules) {
-        const components = modules[moduleName];
-
         // Create the Components directory and _category_.yml for each module
         const compDir = path.resolve(docsDir, moduleName, 'Components');
         initDir(compDir);
         fs.writeFileSync(compDir + '/_category_.yml', 'collapsed: false', 'utf-8');
 
+        const components = modules[moduleName];
+
+        // auto complete elements for all component in each module
+        autoCompleteComponents(components);
+
         // Create schema.json for each module
         const pubModDir = path.resolve(publicDir, moduleName);
         initDir(pubModDir);
-        fs.writeFileSync(path.join(pubModDir, 'schema.json'), JSON.stringify(components), 'utf-8'); 
-        //{ encoding: 'utf8', flag: 'w', recursive: true }
+        fs.writeFileSync(path.join(pubModDir, 'schema.json'), JSON.stringify(components), 'utf-8');
 
         // Generate the output markdown and static images
         for (const componentName in components) {
             const component = components[componentName];
             const images = component.images;
 
-            // Copy images for each component in each module 
+            // Copy images for each component in each module
             for (const image of images) {
                 const imageSrcPath = path.resolve(sourceDir, image.path);
                 const imageTgtPath = path.join(publicDir, image.path);
