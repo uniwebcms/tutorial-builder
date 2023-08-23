@@ -35,7 +35,7 @@ function generateMarkdownTable(data, columnMap) {
 
             let val = data[key][col];
 
-            if (val && (col == 'type' || col == 'layout')) val = formatKeywords(val);
+            if (val && (col == 'type' || col == 'layout' || col == 'alignment')) val = formatKeywords(val);
 
             return val;
         });

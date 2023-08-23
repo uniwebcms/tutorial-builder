@@ -2,6 +2,7 @@ elementColumns:
   $: Role
   type: Element
   layout: Layout
+  alignment: Alignment
   description: Description
 
 propertyColumns:
