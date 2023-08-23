@@ -20,7 +20,7 @@ elements:
     description: A phrase that precedes the main headline.
   title:
     type: H1
-    layout: left, center, right
+    alignment: left, center, right
     description: The main headline.
   text:
     type: paragraph
