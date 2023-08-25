@@ -3,7 +3,18 @@ const PostRebuildPlugin = require('./postBuildPlugin');
 const WatchExternalFilesPlugin = require('webpack-watch-external-files-plugin');
 
 module.exports = (_, argv) => {
+    const { mode } = argv;
     const rootDir = path.resolve(__dirname, '..');
+
+    const plugins = [new PostRebuildPlugin()];
+
+    if (mode === 'development') {
+        plugins.push(
+            new WatchExternalFilesPlugin({
+                files: [path.join(rootDir, 'src/node/**/*.{yml,mdx,js}')]
+            })
+        );
+    }
 
     return {
         entry: path.resolve(rootDir, 'src', 'browser', 'index.js'),
@@ -113,11 +124,6 @@ module.exports = (_, argv) => {
         watchOptions: {
             ignored: ['**/node_modules']
         },
-        plugins: [
-            new PostRebuildPlugin(),
-            new WatchExternalFilesPlugin({
-                files: [path.join(rootDir, 'src/node/**/*.{yml,mdx,js}')]
-            })
-        ]
+        plugins
     };
 };

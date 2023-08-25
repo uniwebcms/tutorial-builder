@@ -161,24 +161,32 @@ function formatKeywords(input) {
         : input; // Join them back with a comma and a space
 }
 
-function autoCompleteElements(elements, template) {
+function autoCompleteComponent(component, template) {
+    let { elements, items } = component;
+
     if (Array.isArray(elements)) {
         elements = Object.fromEntries(elements.map((key) => [key, null]));
     }
 
     const autoElements = template.elements || {};
 
-    for (const key in elements) {
-        elements[key] ??= {};
+    for (const role in elements) {
+        elements[role] ??= {};
 
-        if (autoElements[key]) {
-            const elem = elements[key];
-            const auto = autoElements[key];
+        if (autoElements[role]) {
+            const element = elements[role];
+            const template = autoElements[role];
 
-            for (const prop in auto) {
-                if (!elem[prop]) elem[prop] = auto[prop];
+            for (const key in template) {
+                if (!element.hasOwnProperty(key)) {
+                    element[key] = template[key];
+                }
             }
         }
+    }
+
+    if (items) {
+        autoCompleteComponent(items, template);
     }
 }
 
@@ -186,7 +194,7 @@ function autoCompleteComponents(components) {
     for (const componentName in components) {
         const component = components[componentName];
 
-        autoCompleteElements(component.elements, autoSchema);
+        autoCompleteComponent(component, autoSchema);
     }
 }
 
@@ -237,13 +245,25 @@ function renderComponentDoc(component, docsDir) {
 
     const propertyTable = component.properties ? generateMarkdownTable(component.properties, autoSchema.propertyColumns) : 'There are no customizable properties.';
 
+    const itemElementTable = component.items?.elements ? generateMarkdownTable(component.items.elements, autoSchema.elementColumns) : 'There are no items in this component.';
+
+    const childElementTableDescription = component.items?.separator
+        ? `Separator: ${component.items.separator
+              .split(',')
+              .map((value) => `\`${value.trim()}\``)
+              .join(', ')}`
+        : '';
+
     const map = {
         name: component.name,
+        componentName: component.name,
         description,
         gallery,
         imgImport: imgImport.join(';\n'),
         elementTable: generateMarkdownTable(component.elements, autoSchema.elementColumns),
-        propertyTable
+        propertyTable,
+        itemElementTable,
+        childElementTableDescription
     };
 
     initDir(compDir);
