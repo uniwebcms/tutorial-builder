@@ -1,14 +1,18 @@
 const path = require('path');
+const PostRebuildPlugin = require('./postBuildPlugin');
+const WatchExternalFilesPlugin = require('webpack-watch-external-files-plugin');
 
 module.exports = (_, argv) => {
+    const rootDir = path.resolve(__dirname, '..');
+
     return {
-        entry: path.resolve(__dirname, 'src', 'browser', 'index.js'),
+        entry: path.resolve(rootDir, 'src', 'browser', 'index.js'),
         resolve: {
             extensions: ['.jsx', '.js', '.json']
         },
         output: {
             filename: 'bundle.js',
-            path: path.resolve('dist'),
+            path: path.resolve(rootDir, 'dist'),
             clean: true,
             publicPath: '/dist/',
             libraryTarget: 'umd',
@@ -16,8 +20,8 @@ module.exports = (_, argv) => {
         },
         resolve: {
             alias: {
-                react: path.resolve(__dirname, './node_modules/react'),
-                'react-dom': path.resolve(__dirname, './node_modules/react-dom')
+                react: path.resolve(rootDir, './node_modules/react'),
+                'react-dom': path.resolve(rootDir, './node_modules/react-dom')
             },
             fallback: {
                 path: require.resolve('path-browserify')
@@ -108,6 +112,12 @@ module.exports = (_, argv) => {
         },
         watchOptions: {
             ignored: ['**/node_modules']
-        }
+        },
+        plugins: [
+            new PostRebuildPlugin(),
+            new WatchExternalFilesPlugin({
+                files: [path.join(rootDir, 'src/node/**/*.{yml,mdx,js}')]
+            })
+        ]
     };
 };
