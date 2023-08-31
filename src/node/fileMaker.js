@@ -35,7 +35,7 @@ function generateMarkdownTable(data, columnMap) {
 
             let val = data[key][col];
 
-            if (val && (col == 'type' || col == 'layout' || col == 'alignment')) val = formatKeywords(val);
+            if (val && (col == 'type' || col == 'layout' || col == 'alignment' || col == 'enum')) val = formatKeywords(val);
 
             return val;
         });
@@ -245,7 +245,16 @@ function renderComponentDoc(component, docsDir) {
 
     const propertyTable = component.properties ? generateMarkdownTable(component.properties, autoSchema.propertyColumns) : 'There are no customizable properties.';
 
-    const itemElementTable = component.items?.elements ? generateMarkdownTable(component.items.elements, autoSchema.elementColumns) : 'There are no items in this component.';
+    let itemElementTable = '';
+
+    if (component.items?.elements) {
+        itemElementTable = generateMarkdownTable(component.items.elements, autoSchema.elementColumns);
+    } else if (component.items?.category) {
+        itemElementTable = `Accepts sub-sections with their category ${component.items.category
+            .split(',')
+            .map((value) => `\`${value.trim()}\``)
+            .join(', ')}`;
+    }
 
     const childElementTableDescription = component.items?.separator
         ? `Separator: ${component.items.separator

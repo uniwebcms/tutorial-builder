@@ -8,6 +8,7 @@ elementColumns:
 propertyColumns:
   $: Name
   type: Type
+  enum: Enum
   default: Default
   description: Description
 
