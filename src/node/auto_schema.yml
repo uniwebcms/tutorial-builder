@@ -16,17 +16,27 @@ elements:
   background:
     type: image
     layout: center, wide
-    description: The background image.
+    description: 
+      en: The background image.
+      fr: L'image d'arrière-plan.
   tagline:
     type: H2
-    description: A phrase that precedes the main headline.
+    description: 
+      en: A phrase that precedes the main headline.
+      fr: Une phrase qui précède le titre principal.
   title:
     type: H1
     alignment: left, center, right
-    description: The main headline.
+    description: 
+      en: The main headline.
+      fr: Le titre principal.
   text:
     type: paragraph
-    description: The body text.
+    description: 
+      en: The body text.
+      fr: Le texte du corps.
   media:
     type: image, video
-    description: The primary visual content.
+    description: 
+      en: The primary visual content.
+      fr: Le contenu visuel principal.

@@ -30,12 +30,28 @@ function generateMarkdownTable(data, columnMap) {
     const rows = [];
 
     for (const key in data) {
+        if (key.startsWith('_')) continue;
+
         const row = order.map((col) => {
             if (col === '$') return key;
 
             let val = data[key][col];
 
-            if (val && (col == 'type' || col == 'layout' || col == 'alignment' || col == 'enum')) val = formatKeywords(val);
+            if (val && (col == 'type' || col == 'layout' || col == 'alignment')) val = formatKeywords(val);
+
+            if (val && col === 'enum') {
+                const enumValues = [];
+
+                for (const enumValue in val) {
+                    if (typeof val[enumValue] == 'string') {
+                        enumValues.push(val[enumValue]);
+                    } else if (typeof val[enumValue] == 'object') {
+                        enumValues.push(val[enumValue].value);
+                    }
+                }
+                enumValues.filter(Boolean);
+                val = formatKeywords(enumValues);
+            }
 
             return val;
         });
@@ -96,7 +112,7 @@ function loadSchemas(sourceDir) {
             const dimensions = sizeOf(imgPath);
             const key = path.relative(imgDir, imgPath);
             const relPath = path.relative(sourceDir, imgPath);
-            data.images.push({ key, ...dimensions, path: relPath });
+            data.images.push({ key, ...dimensions, srcPath: relPath, path: relPath.replace('/docs/', '/assets/') });
         }
 
         data.module = levels[0];
@@ -312,7 +328,7 @@ const generateProjectFiles = (rootDir = process.cwd()) => {
 
             // Copy images for each component in each module
             for (const image of images) {
-                const imageSrcPath = path.resolve(sourceDir, image.path);
+                const imageSrcPath = path.resolve(sourceDir, image.srcPath);
                 const imageTgtPath = path.join(publicDir, image.path);
 
                 // Ensure that the path exists (including sub directories)
