@@ -19,7 +19,7 @@ elements:
     description: 
       en: The background image.
       fr: L'image d'arrière-plan.
-  tagline:
+  pretitle:
     type: H2
     description: 
       en: A phrase that precedes the main headline.
@@ -30,6 +30,11 @@ elements:
     description: 
       en: The main headline.
       fr: Le titre principal.
+  subtitle:
+    type: H2
+    description: 
+      en: A phrase that follows the main headline.
+      fr: Une phrase qui suit le titre principal.
   text:
     type: paragraph
     description: 
