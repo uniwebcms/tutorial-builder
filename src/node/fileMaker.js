@@ -53,6 +53,10 @@ function generateMarkdownTable(data, columnMap) {
                 val = formatKeywords(enumValues);
             }
 
+            if ((col = 'description' && typeof val == 'object')) {
+                val = val['en'] || Object.values(val).filter(Boolean)[0];
+            }
+
             return val;
         });
 
@@ -251,7 +255,15 @@ function renderComponentDoc(component, docsDir) {
         </BrowserOnly>`;
     }
 
-    let description = component.description;
+    let description = '';
+
+    if (component.description) {
+        if (typeof component.description == 'object') {
+            description = component.description['en'] || Object.values(component.description).filter(Boolean)[0];
+        } else {
+            description = component.description;
+        }
+    }
 
     if (component.example) {
         const url = new URL(component.example);
