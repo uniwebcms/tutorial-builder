@@ -26,7 +26,7 @@ elements:
       fr: Une phrase qui précède le titre principal.
   title:
     type: H1
-    alignment: left, center, right
+    alignment: ""
     description: 
       en: The main headline.
       fr: Le titre principal.
