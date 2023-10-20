@@ -15,7 +15,7 @@ propertyColumns:
 elements:
   background:
     type: image
-    layout: center, wide
+    layout: ""
     description: 
       en: The background image.
       fr: L'image d'arrière-plan.
