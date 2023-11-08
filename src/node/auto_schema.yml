@@ -45,3 +45,13 @@ elements:
     description: 
       en: The primary visual content.
       fr: Le contenu visuel principal.
+  link:
+    type: link
+    description: 
+      en: A link
+      fr: Un lien
+  card:
+    type: card
+    description: 
+      en: A card
+      fr: Une carte
