@@ -92,7 +92,7 @@ function parseEnvProps(envProps) {
                 throw new Error("Error occurs when build under production mode: 'build:prod'");
             }
         case 'build:gh':
-            if ((GITHUB_REPOSITORY_OWNER, GITHUB_REPOSITORY)) {
+            if (GITHUB_REPOSITORY_OWNER && GITHUB_REPOSITORY) {
                 url = `https://${GITHUB_REPOSITORY_OWNER}.github.io`;
 
                 const repo = GITHUB_REPOSITORY.replace(GITHUB_REPOSITORY_OWNER, '').replace(/^\/|\/$/g, '');
