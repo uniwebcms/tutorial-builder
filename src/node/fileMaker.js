@@ -175,7 +175,13 @@ function formatKeywords(input) {
 
     return Array.isArray(input)
         ? input
-              .map((value) => value.trim()) // Trim whitespace around each element
+              .map((value) => {
+                  if (typeof value == 'string') {
+                      return value.trim();
+                  } else {
+                      return value.toString().trim();
+                  }
+              }) // Trim whitespace around each element
               .map((value) => `\`${value}\``) // Wrap each element with backticks
               .join('<br />')
         : input; // Join them back with a comma and a space
